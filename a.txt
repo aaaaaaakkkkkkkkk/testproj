@@ -1,6 +1,1 @@
-This message is displayed because 'diff.tool' is not configured.
-See 'git difftool --tool-help' or 'git help config' for more details.
-'git difftool' will now attempts to use one of the following tools:
-kompare emerge vimdiff
-No known diff tool is available.
-external diff died, stopping at d.txt.
+c1
