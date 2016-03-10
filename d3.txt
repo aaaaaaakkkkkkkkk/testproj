@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <title>Page Title</title>
+	    <script type="text/javascript" src="a.js"></script>
+	    <script type="text/javascript" src="d3.min.js"></script>
+	    <link rel="stylesheet" href="d.css"/>
+    </head>
+    
+    <body>
+    	
+		<script type="text/javascript" > 
+		//Width and height
+		var w = 500;
+		var h = 300;
+		var padding = 20;
+		var border = 1;
+		var bordercolor = 'black';
+
+		var dataset = [[4,2,3],[10,3,7],[1,9,8]]; //FL-FS,FL-CS,FL-BS
+		barWidth=25;
+		barPadding=15;
+		barSpacing=0;
+
+		// create scale functions
+		var xScale = d3.scale.linear()
+		    .domain([d3.min(dataset, function (d) {
+		    return d[0];
+		}), d3.max(dataset, function (d) {
+		    return d[0];
+		})])
+		    .range([padding+dataset[0].length*barWidth/2, padding+dataset[0].length*barWidth*dataset.length+(dataset.length-1)*barSpacing]);
+
+		var yScale = d3.scale.linear()
+		    .domain([d3.min(dataset, function (d) {return d[0];}), d3.max(dataset, function (d) {return d[0];})])
+		    .range([h - padding,padding]);
+
+		//Create SVG element
+		var svg = d3.select("body")
+		    .append("svg")
+		    .attr("width", padding+dataset[0].length*barWidth*dataset.length+(dataset.length-1)*barSpacing)
+		    .attr("height", h)
+		    .attr("border", border);
+		
+// 		var color = d3.scale.linear()
+// 	    .domain([0, 1, 2])
+// 	    .range(["#7cb5ec", "#90ed7d", "#E99696"]);
+
+var color = d3.scale.category20()
+// 	var color = d3.scale.linear()
+//     .domain([0, dataset.length])
+//     .range(["#97F76B", "#32631B"]);   //.range(["#aad", "#556"]); .range(["#99FCEB", "#0D5D50"]);  
+    
+		var numberOfTicks = 10;
+		
+		//define X axis
+		var xAxis = d3.svg.axis()
+		    .scale(xScale)
+		    .orient("bottom")
+		    .tickSize(-h, 0, 0); //Set rough # of ticks
+
+		//Define Y axis
+		var yAxis = d3.svg.axis()
+		    .scale(yScale)
+		    .orient("left")
+		    .ticks(numberOfTicks)
+		    .tickSize(-w, 0, 0);
+
+		//   draw axes here
+		svg.append("g")
+		    .attr("class", "axis") //assign "axis" class
+		.attr("transform", "translate(0," + (h - padding) + ")")
+		    .call(xAxis);
+
+		svg.append("g")
+		    .attr("class", "axis") //assign "axis" class
+		.attr("transform", "translate(" + padding + ",0)")
+		    .call(yAxis);
+
+		//Draw a grid
+		var yAxisGrid = yAxis.ticks(numberOfTicks)
+		    .tickSize(padding+dataset[0].length*barWidth*dataset.length+(dataset.length-1)*barSpacing, 0)
+		    .tickFormat("")
+		    .orient("right");
+
+		var xAxisGrid = xAxis.ticks(numberOfTicks)
+		    .tickSize(-h, 0)
+		    .tickFormat("")
+		    .orient("top");
+
+		svg.append("g")
+		    .classed('y', true)
+		    .classed('grid', true)
+		    .attr("transform", "translate(" + padding + ",0)")
+		    .call(yAxisGrid);
+
+// 		svg.append("g")
+// 		    .classed('x', true)
+// 		    .classed('grid', true)
+// 		    .call(xAxisGrid);
+
+		//create the bars
+		svg.selectAll("rect")
+		   .data(dataset[0])
+		   .enter()
+		   .append("rect")
+		   .attr("x", function(d,i){return xScale(i)-barWidth/2+barPadding;})
+		   .attr("y", function(d,i){return h-yScale(d)-padding;})
+		   .attr("width", barWidth)
+		   .attr("height", function(d,i){return yScale(d);})
+		   .attr("fill", function(d,i){return color(i);})
+		   .text(function(d) { return "this ia bar label"; });
+		</script>
+    </body>
+</html>
